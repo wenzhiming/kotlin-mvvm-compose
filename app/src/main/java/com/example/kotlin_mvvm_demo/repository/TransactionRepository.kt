@@ -22,7 +22,9 @@ import kotlin.math.min
 
 class TransactionRepository(private val apiService: ApiService) {
 
-    fun getTransactions(apiKey: String): Flow<List<Transaction>> = flow {
+    private val apiKey = "PMAK-668cefa85d9ee800012eef9d-7d7956c21099fa61f71001096a29b28fe7"
+
+    fun getTransactions(): Flow<List<Transaction>> = flow {
         emit(apiService.getTransactions(apiKey))
     }.catch {
         emit(emptyList())

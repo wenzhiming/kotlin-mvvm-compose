@@ -19,11 +19,10 @@ class MainActivity : ComponentActivity() {
         val repository = TransactionRepository(apiService)
         val viewModelFactory = TransactionViewModelFactory(repository)
         transactionViewModel = ViewModelProvider(this, viewModelFactory).get(TransactionViewModel::class.java)
+        transactionViewModel.loadTransactions()
 
         setContent {
-            val apiKey = "PMAK-668cefa85d9ee800012eef9d-7d7956c21099fa61f71001096a29b28fe7"
-            transactionViewModel.loadTransactions(apiKey)
-            TransactionListScreen(transactionViewModel, apiKey)
+            TransactionListScreen(transactionViewModel)
         }
     }
 }

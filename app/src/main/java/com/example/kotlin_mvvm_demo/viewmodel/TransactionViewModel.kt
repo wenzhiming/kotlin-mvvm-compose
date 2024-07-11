@@ -31,10 +31,10 @@ class TransactionViewModel(private val repository: TransactionRepository) : View
         return repository.getPagedTransactions(transactions.value).cachedIn(viewModelScope)
     }
 
-    fun loadTransactions(apiKey: String) {
+    fun loadTransactions() {
         viewModelScope.launch {
             _isRefreshing.value = true
-            repository.getTransactions(apiKey)
+            repository.getTransactions()
                 .collect { transactions ->
                     _transactions.value = transactions
                 }
@@ -42,8 +42,8 @@ class TransactionViewModel(private val repository: TransactionRepository) : View
         }
     }
 
-    fun refreshTransactions(apiKey: String) {
-        loadTransactions(apiKey)
+    fun refreshTransactions() {
+        loadTransactions()
     }
 }
 

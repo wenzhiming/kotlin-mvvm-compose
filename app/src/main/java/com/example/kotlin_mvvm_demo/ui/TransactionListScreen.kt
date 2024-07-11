@@ -40,13 +40,13 @@ import com.example.kotlin_mvvm_demo.viewmodel.TransactionViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun TransactionListScreen(viewModel: TransactionViewModel, apiKey: String) {
+fun TransactionListScreen(viewModel: TransactionViewModel) {
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val pagedTransactions = viewModel.getPageData().collectAsLazyPagingItems()
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isRefreshing,
-        onRefresh = { viewModel.refreshTransactions(apiKey) }
+        onRefresh = { viewModel.refreshTransactions() }
     )
 
     Box(
