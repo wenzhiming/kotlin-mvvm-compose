@@ -7,9 +7,10 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.kotlin_mvvm_demo.model.Transaction
 import com.example.kotlin_mvvm_demo.network.ApiService
+import com.example.kotlin_mvvm_demo.network.HttpException
+import com.example.kotlin_mvvm_demo.network.ResultData
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlin.math.min
 
@@ -24,10 +25,21 @@ class TransactionRepository(private val apiService: ApiService) {
 
     private val apiKey = "PMAK-668cefa85d9ee800012eef9d-7d7956c21099fa61f71001096a29b28fe7"
 
-    fun getTransactions(): Flow<List<Transaction>> = flow {
-        emit(apiService.getTransactions(apiKey))
-    }.catch {
-        emit(emptyList())
+    fun getTransactions(): Flow<ResultData<List<Transaction>>> = flow {
+        emit(ResultData.Loading) // 发出加载状态
+        try {
+            val response = apiService.getTransactions(apiKey)
+            if (response.isSuccessful) {
+                emit(ResultData.Success(response.body() ?: emptyList())) // 发出成功的结果
+            } else {
+                val errorBody = response.errorBody()?.string() ?: "Unknown error"
+                throw HttpException(errorBody, response.code(), errorBody)
+            }
+        } catch (e: HttpException) {
+            emit(ResultData.Error(e)) // 发出包含HttpException的错误结果
+        } catch (e: Throwable) {
+            emit(ResultData.Error(HttpException("Network or unknown error", -1, ""))) // 发出一般错误
+        }
     }
 
     fun getPagedTransactions(data: List<Transaction>): Flow<PagingData<Transaction>> {

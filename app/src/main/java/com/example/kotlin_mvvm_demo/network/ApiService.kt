@@ -1,6 +1,7 @@
 package com.example.kotlin_mvvm_demo.network
 
 import com.example.kotlin_mvvm_demo.model.Transaction
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
 
@@ -12,6 +13,7 @@ import retrofit2.http.Header
  */
 interface ApiService {
     @GET("bank/transactions")
-    suspend fun getTransactions(@Header("x-api-key") apiKey: String): List<Transaction>
+    suspend fun getTransactions(@Header("x-api-key") apiKey: String): Response<List<Transaction>>
 
 }
+
